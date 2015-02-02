@@ -20,7 +20,11 @@ npm install docker-loghose --save
 
 ```
 var loghose = require('loghose')
-loghose.pipe(process.stdout)
+loghose().pipe(through.obj(function(chunk, enc, cb) {
+  this.push(JSON.stringify(chunk))
+  this.push('\n')
+  cb()
+})).pipe(process.stdout)
 ```
 
 ## Data format

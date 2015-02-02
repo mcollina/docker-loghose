@@ -6,7 +6,7 @@ var split = require('split2')
 var Docker = require('dockerode')
 var pump = require('pump')
 
-function logHose (opts) {
+function loghose (opts) {
   var docker = new Docker(opts)
   var result = through.obj()
   var events = nes(function(cb) {
@@ -68,10 +68,10 @@ function logHose (opts) {
   }
 }
 
-module.exports = logHose
+module.exports = loghose
 
 if (require.main === module) {
-  logHose().pipe(through.obj(function(chunk, enc, cb) {
+  loghose().pipe(through.obj(function(chunk, enc, cb) {
     this.push(JSON.stringify(chunk))
     this.push('\n')
     cb()
