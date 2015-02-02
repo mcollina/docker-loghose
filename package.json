@@ -1,0 +1,33 @@
+{
+  "name": "docker-loghose",
+  "version": "0.0.1",
+  "description": "Collect all the logs from all docker containers",
+  "main": "loghose.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": "loghose.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mcollina/docker-loghose.git"
+  },
+  "keywords": [
+    "docker",
+    "log",
+    "logs",
+    "collect"
+  ],
+  "author": "Matteo Collina <hello@matteocollina.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mcollina/docker-loghose/issues"
+  },
+  "homepage": "https://github.com/mcollina/docker-loghose",
+  "dependencies": {
+    "dockerode": "^2.0.6",
+    "never-ending-stream": "^1.1.0",
+    "pump": "^1.0.0",
+    "split2": "^0.2.1",
+    "through2": "^0.6.3"
+  }
+}
