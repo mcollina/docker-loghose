@@ -5,15 +5,18 @@ var through = require('through2')
 var Docker = require('dockerode')
 var bl = require('bl')
 var pump = require('pump')
+var minimist = require('minimist')
 
 function loghose (opts) {
-  var docker = new Docker(opts)
+  opts = opts || {}
+  var docker = new Docker(opts.docker)
   var result = through.obj()
   var events = nes(function(cb) {
         docker.getEvents(cb)
       })
   var streams = {}
   var oldDestroy = result.destroy
+  var toLine = opts.json ? toLineJSON : toLineString
 
   result.destroy = function() {
     Object.keys(streams).forEach(function(stream) {
@@ -87,9 +90,9 @@ function loghose (opts) {
       if (list.length >= length) {
         filter.push({
           v: 0,
-          id: data.Id,
+          id: data.Id.slice(0, 12),
           image: data.Image,
-          line: list.slice(0, length).toString()
+          line: toLine(list.slice(0, length))
         })
         list.consume(length)
         readingHeader = true
@@ -97,22 +100,46 @@ function loghose (opts) {
       }
     }
   }
+
+  function toLineJSON(line) {
+    try {
+      return JSON.parse(line)
+    } catch(err) {
+      return line
+    }
+  }
+
+  function toLineString(line) {
+    return line.toString()
+  }
 }
-
-function split() {
-
-  return through.obj(function(chunk, enc, cb) {
-  })
-
-}
-
 
 module.exports = loghose
 
-if (require.main === module) {
-  loghose().pipe(through.obj(function(chunk, enc, cb) {
+function cli() {
+  var argv = minimist(process.argv.slice(2), {
+    boolean: ['json'],
+    alias: {
+      'help': 'h',
+      'json': 'j'
+    },
+    default: {
+      json: false
+    }
+  })
+
+  if (argv.help) {
+    console.log('Usage: docker-loghose [--json] [--help]')
+    process.exit(1)
+  }
+
+  loghose({ json: argv.json }).pipe(through.obj(function(chunk, enc, cb) {
     this.push(JSON.stringify(chunk))
     this.push('\n')
     cb()
   })).pipe(process.stdout)
+}
+
+if (require.main === module) {
+  cli()
 }

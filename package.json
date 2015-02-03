@@ -27,6 +27,7 @@
   "dependencies": {
     "bl": "^0.9.4",
     "dockerode": "^2.0.6",
+    "minimist": "^1.1.0",
     "never-ending-stream": "^1.1.0",
     "pump": "^1.0.0",
     "through2": "^0.6.3"
