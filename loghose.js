@@ -110,7 +110,7 @@ function loghose (opts) {
   }
 
   function toLineString(line) {
-    return line.toString()
+    return line.toString().trim()
   }
 }
 
