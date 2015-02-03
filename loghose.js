@@ -47,6 +47,12 @@ function loghose (opts) {
   return result
 
   function attachContainer(data) {
+    // we are trying to tap into this container
+    // we should not do that, or we might be stuck in
+    // an output loop
+    if (data.Id.indexOf(process.env.HOSTNAME) === 0) {
+      return
+    }
     var container = docker.getContainer(data.Id);
     var stream = nes(function(cb) {
           container.attach({stream: true, stdout: true, stderr: true}, cb)
