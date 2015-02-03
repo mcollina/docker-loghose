@@ -20,6 +20,10 @@ npm install docker-loghose --save
 
 ```
 var loghose = require('loghose')
+var opts = {
+  json: false, // parse the lines that are coming as JSON
+  docker: null // here goes options for Dockerode
+}
 loghose().pipe(through.obj(function(chunk, enc, cb) {
   this.push(JSON.stringify(chunk))
   this.push('\n')
@@ -30,7 +34,7 @@ loghose().pipe(through.obj(function(chunk, enc, cb) {
 ## Command Line Usage
 
 ```bash
-docker-loghose
+docker-loghose [--json]
 ```
 
 ## Docker Usage
@@ -46,7 +50,7 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock matteocollina/docke
   v: 0,
   id: "3324acd73ad5ed7aa5d35675fd3e5f34d8a3ee4ea77c19239cfa113e47d0ddce",
   image: "myimage:latest",
-  line: "This is a log line"
+  line: "This is a log line" // this will be an object if opts.jon is true
 }
 ```
 
