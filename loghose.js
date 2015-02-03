@@ -105,7 +105,7 @@ function loghose (opts) {
     try {
       return JSON.parse(line)
     } catch(err) {
-      return line
+      return line.toString()
     }
   }
 
