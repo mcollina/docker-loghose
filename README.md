@@ -27,20 +27,27 @@ loghose().pipe(through.obj(function(chunk, enc, cb) {
 })).pipe(process.stdout)
 ```
 
+## Command Line Usage
+
+```bash
+docker-loghose
+```
+
+## Docker Usage
+
+```bash
+docker run --rm -v /var/run/docker.sock:/var/run/docker.sock matteocollina/docker-loghose
+```
+
 ## Data format
 
 ```js
 {
   v: 0,
   id: "3324acd73ad5ed7aa5d35675fd3e5f34d8a3ee4ea77c19239cfa113e47d0ddce",
-  image: "mosca:latest"
+  image: "myimage:latest",
+  line: "This is a log line"
 }
-```
-
-## Command Line Usage
-
-```bash
-docker-loghose
 ```
 
 Acknowledgements
