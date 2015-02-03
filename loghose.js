@@ -2,8 +2,8 @@
 
 var nes = require('never-ending-stream')
 var through = require('through2')
-var split = require('split2')
 var Docker = require('dockerode')
+var bl = require('bl')
 var pump = require('pump')
 
 function loghose (opts) {
@@ -39,10 +39,10 @@ function loghose (opts) {
 
   docker.listContainers(function(err, containers) {
     if (err) {
-      return result.emit('error', err);
+      return result.emit('error', err)
     }
-    containers.forEach(attachContainer);
-  });
+    containers.forEach(attachContainer)
+  })
 
   return result
 
@@ -53,26 +53,59 @@ function loghose (opts) {
     if (data.Id.indexOf(process.env.HOSTNAME) === 0) {
       return
     }
-    var container = docker.getContainer(data.Id);
+    var container = docker.getContainer(data.Id)
     var stream = nes(function(cb) {
           container.attach({stream: true, stdout: true, stderr: true}, cb)
         })
+    var list = bl()
+    var readingHeader = true
+    var length = 0
+
     streams[data.Id] = stream
     pump(
       stream,
-      split(),
       through.obj(function(chunk, enc, cb) {
-        this.push({
+        list.append(chunk)
+        parse(list, this)
+        cb()
+      })
+    ).pipe(result, { end: false })
+
+    function parse(list, filter) {
+      if (readingHeader) {
+        if (list.length < 8) {
+          // nothing to do
+          return
+        }
+        // weird protocol by Docker
+        // https://docs.docker.com/reference/api/docker_remote_api_v1.16/#attach-to-a-container
+        length = list.readUInt32BE(4)
+        list.consume(8)
+        readingHeader = false
+      }
+
+      if (list.length >= length) {
+        filter.push({
           v: 0,
           id: data.Id,
           image: data.Image,
-          line: chunk
+          line: list.slice(0, length).toString()
         })
-        cb()
-      }))
-      .pipe(result, { end: false })
+        list.consume(length)
+        readingHeader = true
+        parse(list, filter)
+      }
+    }
   }
 }
+
+function split() {
+
+  return through.obj(function(chunk, enc, cb) {
+  })
+
+}
+
 
 module.exports = loghose
 
