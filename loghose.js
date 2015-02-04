@@ -2,64 +2,46 @@
 
 var nes = require('never-ending-stream')
 var through = require('through2')
-var Docker = require('dockerode')
 var bl = require('bl')
 var pump = require('pump')
+var allContainers = require('docker-allcontainers')
 var minimist = require('minimist')
 
 function loghose (opts) {
   opts = opts || {}
-  var docker = new Docker(opts.docker)
   var result = through.obj()
-  var events = nes(function(cb) {
-        docker.getEvents(cb)
-      })
+  var events = allContainers(opts)
   var streams = {}
   var oldDestroy = result.destroy
   var toLine = opts.json ? toLineJSON : toLineString
 
   result.destroy = function() {
-    Object.keys(streams).forEach(function(key) {
-      var stream = streams[key]
-      stream.destroy()
-      delete streams[key]
-    })
+    Object.keys(streams).forEach(detachContainer)
     events.destroy()
     oldDestroy.call(this)
   }
 
-  events.pipe(through(function(chunk, enc, cb) {
-    var data = JSON.parse(chunk)
-    if (data.status === 'start') {
-      data.Id = data.id
-      data.Image = data.from
-      attachContainer(data)
-    } else if (data.status === 'stop' || data.status === 'die') {
-      if (streams[data.id]) {
-        streams[data.id].destroy()
-        delete streams[data.id]
-      }
-    }
-    cb()
-  }))
-
-  docker.listContainers(function(err, containers) {
-    if (err) {
-      return result.emit('error', err)
-    }
-    containers.forEach(attachContainer)
+  events.on('start', attachContainer)
+  events.on('stop', function(meta) {
+    detachContainer(meta.id)
   })
+
+  function detachContainer(id) {
+    if (streams[id]) {
+      streams[id].destroy()
+      delete streams[id]
+    }
+  }
 
   return result
 
-  function attachContainer(data) {
+  function attachContainer(data, container) {
     // we are trying to tap into this container
     // we should not do that, or we might be stuck in
     // an output loop
-    if (data.Id.indexOf(process.env.HOSTNAME) === 0) {
+    if (data.id.indexOf(process.env.HOSTNAME) === 0) {
       return
     }
-    var container = docker.getContainer(data.Id)
     var stream = nes(function(cb) {
           container.attach({stream: true, stdout: true, stderr: true}, cb)
         })
@@ -93,8 +75,8 @@ function loghose (opts) {
       if (list.length >= length) {
         filter.push({
           v: 0,
-          id: data.Id.slice(0, 12),
-          image: data.Image,
+          id: data.id.slice(0, 12),
+          image: data.image,
           line: toLine(list.slice(0, length))
         })
         list.consume(length)
