@@ -10,7 +10,7 @@ var minimist = require('minimist')
 function loghose (opts) {
   opts = opts || {}
   var result = through.obj()
-  var events = allContainers(opts)
+  var events = opts.events || allContainers(opts)
   var streams = {}
   var oldDestroy = result.destroy
   var toLine = opts.json ? toLineJSON : toLineString

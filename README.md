@@ -22,9 +22,10 @@ npm install docker-loghose --save
 var loghose = require('loghose')
 var opts = {
   json: false, // parse the lines that are coming as JSON
-  docker: null // here goes options for Dockerode
+  docker: null, // here goes options for Dockerode
+  events: null // an instance of docker-allcontainers
 }
-loghose().pipe(through.obj(function(chunk, enc, cb) {
+loghose(opts).pipe(through.obj(function(chunk, enc, cb) {
   this.push(JSON.stringify(chunk))
   this.push('\n')
   cb()
