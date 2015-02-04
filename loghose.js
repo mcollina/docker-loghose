@@ -19,9 +19,12 @@ function loghose (opts) {
   var toLine = opts.json ? toLineJSON : toLineString
 
   result.destroy = function() {
-    Object.keys(streams).forEach(function(stream) {
+    Object.keys(streams).forEach(function(key) {
+      var stream = streams[key]
       stream.destroy()
+      delete streams[key]
     })
+    events.destroy()
     oldDestroy.call(this)
   }
 
