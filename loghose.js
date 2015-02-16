@@ -49,8 +49,10 @@ function loghose (opts) {
     var filter = through.obj(parse)
     filter.list = bl()
     filter.data = data
+    filter.length = 0
+    filter.readingHeader = true
 
-    streams[data.Id] = stream
+    streams[data.id] = stream
     pump(
       stream,
       filter
@@ -70,38 +72,36 @@ function loghose (opts) {
   }
 
   function parse(chunk, enc, cb) {
-    var length = 0
-    var readingHeader = true
-
     if (chunk) {
       this.list.append(chunk)
     }
 
-    if (readingHeader) {
+    if (this.readingHeader) {
       if (this.list.length < 8) {
         // nothing to do
         return cb()
       }
       // weird protocol by Docker
       // https://docs.docker.com/reference/api/docker_remote_api_v1.16/#attach-to-a-container
-      length = this.list.readUInt32BE(4)
+      this.length = this.list.readUInt32BE(4)
       this.list.consume(8)
-      readingHeader = false
+      this.readingHeader = false
     }
 
-    if (this.list.length >= length) {
-      this.push({
-        v: 0,
-        id: this.data.id.slice(0, 12),
-        image: this.data.image,
-        line: toLine(this.list.slice(0, length))
-      })
-      this.list.consume(length)
-      readingHeader = true
-      this._transform(null, enc, cb)
-    } else {
+    if (this.list.length < this.length) {
       return cb()
     }
+
+    this.push({
+      v: 0,
+      id: this.data.id.slice(0, 12),
+      image: this.data.image,
+      name: this.data.name,
+      line: toLine(this.list.slice(0, this.length))
+    })
+    this.list.consume(this.length)
+    this.readingHeader = true
+    this._transform(null, enc, cb)
   }
 }
 
