@@ -45,45 +45,16 @@ function loghose (opts) {
     var stream = nes(function(cb) {
           container.attach({stream: true, stdout: true, stderr: true}, cb)
         })
-    var list = bl()
-    var readingHeader = true
-    var length = 0
+
+    var filter = through.obj(parse)
+    filter.list = bl()
+    filter.data = data
 
     streams[data.Id] = stream
     pump(
       stream,
-      through.obj(function(chunk, enc, cb) {
-        list.append(chunk)
-        parse(list, this)
-        cb()
-      })
+      filter
     ).pipe(result, { end: false })
-
-    function parse(list, filter) {
-      if (readingHeader) {
-        if (list.length < 8) {
-          // nothing to do
-          return
-        }
-        // weird protocol by Docker
-        // https://docs.docker.com/reference/api/docker_remote_api_v1.16/#attach-to-a-container
-        length = list.readUInt32BE(4)
-        list.consume(8)
-        readingHeader = false
-      }
-
-      if (list.length >= length) {
-        filter.push({
-          v: 0,
-          id: data.id.slice(0, 12),
-          image: data.image,
-          line: toLine(list.slice(0, length))
-        })
-        list.consume(length)
-        readingHeader = true
-        parse(list, filter)
-      }
-    }
   }
 
   function toLineJSON(line) {
@@ -96,6 +67,41 @@ function loghose (opts) {
 
   function toLineString(line) {
     return line.toString().trim()
+  }
+
+  function parse(chunk, enc, cb) {
+    var length = 0
+    var readingHeader = true
+
+    if (chunk) {
+      this.list.append(chunk)
+    }
+
+    if (readingHeader) {
+      if (this.list.length < 8) {
+        // nothing to do
+        return cb()
+      }
+      // weird protocol by Docker
+      // https://docs.docker.com/reference/api/docker_remote_api_v1.16/#attach-to-a-container
+      length = this.list.readUInt32BE(4)
+      this.list.consume(8)
+      readingHeader = false
+    }
+
+    if (this.list.length >= length) {
+      this.push({
+        v: 0,
+        id: this.data.id.slice(0, 12),
+        image: this.data.image,
+        line: toLine(this.list.slice(0, length))
+      })
+      this.list.consume(length)
+      readingHeader = true
+      this._transform(null, enc, cb)
+    } else {
+      return cb()
+    }
   }
 }
 
