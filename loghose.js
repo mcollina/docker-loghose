@@ -15,6 +15,8 @@ function loghose (opts) {
   var oldDestroy = result.destroy
   var toLine = opts.json ? toLineJSON : toLineString
 
+  result.setMaxListeners(0)
+
   result.destroy = function() {
     Object.keys(streams).forEach(detachContainer)
     events.destroy()
