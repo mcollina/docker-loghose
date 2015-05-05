@@ -26,7 +26,7 @@
   "homepage": "https://github.com/mcollina/docker-loghose",
   "dependencies": {
     "bl": "^0.9.4",
-    "docker-allcontainers": "^0.2.0",
+    "docker-allcontainers": "^0.3.0",
     "minimist": "^1.1.0",
     "never-ending-stream": "^1.1.0",
     "pump": "^1.0.0",

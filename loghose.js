@@ -122,11 +122,19 @@ function cli() {
   })
 
   if (argv.help) {
-    console.log('Usage: docker-loghose [--json] [--help]')
+    console.log('Usage: docker-loghose [--json] [--help]\n' +
+                '                      [--matchByImage REGEXP] [--matchByName REGEXP]\n' +
+                '                      [--skipByImage REGEXP] [--skipByName REGEXP]')
     process.exit(1)
   }
 
-  loghose({ json: argv.json }).pipe(through.obj(function(chunk, enc, cb) {
+  loghose({
+    matchByName: argv.matchByName,
+    matchByImage: argv.matchByImage,
+    skipByName: argv.skipByName,
+    skipByImage: argv.skipByImage,
+    json: argv.json
+  }).pipe(through.obj(function(chunk, enc, cb) {
     this.push(JSON.stringify(chunk))
     this.push('\n')
     cb()

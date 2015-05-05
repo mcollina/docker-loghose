@@ -18,12 +18,19 @@ npm install docker-loghose --save
 
 ## Embedded Usage
 
-```
+```js
 var loghose = require('loghose')
 var opts = {
   json: false, // parse the lines that are coming as JSON
   docker: null, // here goes options for Dockerode
-  events: null // an instance of docker-allcontainers
+  events: null, // an instance of docker-allcontainers
+
+  // the following options limit the containers being matched
+  // so we can avoid catching logs for unwanted containers
+  matchByName: /hello/, // optional
+  matchByImage: /matteocollina/, //optional
+  skipByName: /.*pasteur.*/, //optional
+  skipByImage: /.*dockerfile.*/ //optional
 }
 loghose(opts).pipe(through.obj(function(chunk, enc, cb) {
   this.push(JSON.stringify(chunk))
@@ -35,7 +42,9 @@ loghose(opts).pipe(through.obj(function(chunk, enc, cb) {
 ## Command Line Usage
 
 ```bash
-docker-loghose [--json]
+docker-loghose [--json] [--help]
+               [--matchByImage REGEXP] [--matchByName REGEXP]
+               [--skipByImage REGEXP] [--skipByName REGEXP]
 ```
 
 ## Docker Usage
