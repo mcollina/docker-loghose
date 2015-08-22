@@ -24,8 +24,8 @@ describe('The parser', function () {
 
         var line = new Buffer(inputLine + '\n')
 
-        firstFour.writeUInt32LE(1)
-        lastFour.writeUInt32BE(line.length)
+        firstFour.writeUInt32BE(1, 0)
+        lastFour.writeUInt32BE(line.length, 0)
 
         helper.expectData(lineParser, [inputLine], done)
 
@@ -40,8 +40,8 @@ describe('The parser', function () {
           var line = new Buffer(inputLine + '\n')
           var rest = new Buffer(4 + line.length)
 
-          firstFour.writeUInt32LE(1)
-          rest.writeUInt32BE(line.length)
+          firstFour.writeUInt32LE(1, 0)
+          rest.writeUInt32BE(line.length, 0)
           line.copy(rest, 4)
 
           helper.expectData(lineParser, [inputLine], done)

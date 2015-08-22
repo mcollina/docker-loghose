@@ -11,14 +11,14 @@ function expectedData (line) {
 
 function buildHeader (line) {
   var buffer = new Buffer(8)
-  buffer.writeUInt32LE(1)
+  buffer.writeUInt32BE(1, 0)
   buffer.writeUInt32BE(line.length, 4)
   return buffer
 }
 
 module.exports.buildHeader = function (line) {
   var buffer = new Buffer(8)
-  buffer.writeUInt32LE(1)
+  buffer.writeUInt32BE(1, 0)
   buffer.writeUInt32BE(line.length, 4)
   return buffer
 }
