@@ -1,4 +1,4 @@
-var parser = require('../../src/parser')
+var parser = require('../../lib/parser')
 var helper = require('../helper.js')
 var expect = require('chai').expect
 

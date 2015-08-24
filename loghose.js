@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 var minimist = require('minimist')
-var loghose = require('./src/loghose')
+var loghose = require('./lib/loghose')
 var through = require('through2')
 
 module.exports = loghose
