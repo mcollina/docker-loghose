@@ -24,7 +24,7 @@ var opts = {
   json: false, // parse the lines that are coming as JSON
   docker: null, // here goes options for Dockerode
   events: null, // an instance of docker-allcontainers
-
+  newline: false, // Break stream in newlines
   // the following options limit the containers being matched
   // so we can avoid catching logs for unwanted containers
   matchByName: /hello/, // optional
@@ -43,6 +43,7 @@ loghose(opts).pipe(through.obj(function(chunk, enc, cb) {
 
 ```bash
 docker-loghose [--json] [--help]
+               [--newline]
                [--matchByImage REGEXP] [--matchByName REGEXP]
                [--skipByImage REGEXP] [--skipByName REGEXP]
 ```

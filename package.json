@@ -4,8 +4,10 @@
   "description": "Collect all the logs from all docker containers",
   "main": "loghose.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./loghose.js"
+    "test": "mocha --recursive",
+    "watch": "mocha --watch --recursive",
+    "start": "./loghose.js",
+    "standard": "standard"
   },
   "bin": "loghose.js",
   "repository": {
@@ -31,5 +33,10 @@
     "never-ending-stream": "^1.1.2",
     "pump": "^1.0.0",
     "through2": "^0.6.5"
+  },
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "mocha": "^2.2.5",
+    "standard": "^5.1.0"
   }
 }
