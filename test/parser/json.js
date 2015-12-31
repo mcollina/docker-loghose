@@ -1,3 +1,4 @@
+/* global describe it beforeEach */
 var parser = require('../../lib/parser')
 var helper = require('../helper.js')
 
@@ -8,7 +9,6 @@ describe('The parser', function () {
   var lineParser
 
   describe('when passing --json', function () {
-
     describe('when not using --newline', function () {
       beforeEach(function (done) {
         lineParser = parser(sampleOutput, {json: true})

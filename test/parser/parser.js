@@ -1,3 +1,4 @@
+/* global describe it beforeEach */
 var parser = require('../../lib/parser')
 var helper = require('../helper.js')
 var expect = require('chai').expect
@@ -19,7 +20,6 @@ describe('The parser', function () {
   })
 
   it('outputs the chunk wrapped in an object', function (done) {
-
     helper.expectData(lineParser, [testData.inputLine], done)
 
     helper.writeChunks(lineParser, [helper.buildBuffer(testData.inputLine + '\n')])
@@ -31,7 +31,7 @@ describe('The parser', function () {
 
       helper.expectData(lineParser, data, done)
 
-      helper.writeChunks(lineParser, data.map(function (chunk) { return helper.buildBuffer(chunk)}))
+      helper.writeChunks(lineParser, data.map(function (chunk) { return helper.buildBuffer(chunk) }))
     })
   })
 })

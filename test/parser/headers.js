@@ -1,3 +1,4 @@
+/* global describe it beforeEach */
 var parser = require('../../lib/parser')
 var helper = require('../helper.js')
 
@@ -10,7 +11,6 @@ describe('The parser', function () {
   var lineParser
 
   describe('when processing headers', function () {
-
     beforeEach(function (done) {
       lineParser = parser(sampleOutput, {})
       done()
@@ -18,7 +18,6 @@ describe('The parser', function () {
 
     describe('split in two chunks', function () {
       it('consumes the headers correctly', function (done) {
-
         var firstFour = new Buffer(4)
         var lastFour = new Buffer(4)
 
@@ -30,12 +29,10 @@ describe('The parser', function () {
         helper.expectData(lineParser, [inputLine], done)
 
         helper.writeChunks(lineParser, [firstFour, lastFour, line])
-
       })
 
       describe('where the last chunk contains both headers and payload data', function () {
         it('consumes the headers correctly', function (done) {
-
           var firstFour = new Buffer(4)
           var line = new Buffer(inputLine + '\n')
           var rest = new Buffer(4 + line.length)
@@ -47,7 +44,6 @@ describe('The parser', function () {
           helper.expectData(lineParser, [inputLine], done)
 
           helper.writeChunks(lineParser, [firstFour, rest])
-
         })
       })
     })
