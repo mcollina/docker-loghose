@@ -1,3 +1,4 @@
+/* global describe it beforeEach */
 var parser = require('../../lib/parser')
 var helper = require('../helper.js')
 
@@ -8,7 +9,6 @@ describe('The parser', function () {
   var lineParser
 
   describe('when passing --newline', function () {
-
     beforeEach(function (done) {
       lineParser = parser(sampleOutput, {newline: true})
       done()
@@ -25,7 +25,7 @@ describe('The parser', function () {
       it('outputs the lines separately', function (done) {
         var data = [testData.verseOne, testData.verseTwo, testData.rest]
         helper.expectData(lineParser, data, done)
-        helper.writeChunks(lineParser, data.map(function (c) { return helper.buildBuffer(c + '\n')}))
+        helper.writeChunks(lineParser, data.map(function (c) { return helper.buildBuffer(c + '\n') }))
       })
     })
 
@@ -43,8 +43,7 @@ describe('The parser', function () {
 
         helper.expectData(lineParser, outputData, done)
 
-        helper.writeChunks(lineParser, inputData.map(function (c) { return helper.buildBuffer(c)}))
-
+        helper.writeChunks(lineParser, inputData.map(function (c) { return helper.buildBuffer(c) }))
       })
     })
 
