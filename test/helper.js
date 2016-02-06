@@ -34,6 +34,7 @@ module.exports.buildBuffer = function (line) {
 module.exports. expectData = function (lineParser, data, done) {
   var index = 0
   lineParser.pipe(through.obj(function (chunk, enc, cb) {
+    delete chunk.time
     expect(chunk).to.deep.equals(expectedData(data[index]))
     if (index === data.length - 1) {
       done()
