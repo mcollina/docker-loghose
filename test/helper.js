@@ -31,9 +31,13 @@ module.exports.buildBuffer = function (line) {
   return buffer
 }
 
-module.exports. expectData = function (lineParser, data, done) {
+module.exports.expectData = function (lineParser, data, done) {
   var index = 0
   lineParser.pipe(through.obj(function (chunk, enc, cb) {
+    expect(chunk).to.have.property('time')
+    expect(chunk.time).to.be.a('number')
+    expect(chunk.time).to.be.at.most(Date.now())
+    expect(chunk.time).to.be.at.least(Date.now() - 100)
     delete chunk.time
     expect(chunk).to.deep.equals(expectedData(data[index]))
     if (index === data.length - 1) {
