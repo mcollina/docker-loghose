@@ -51,10 +51,10 @@ describe('The parser', function () {
       var data = ['abcd', 'efgh']
 
       helper.expectData(lineParser, data, done)
-
-      var wholeBuffer = new Buffer(8 * 3 + 3 + testData.verseOne.length + testData.verseTwo.length + testData.rest.length)
-      helper.buildBuffer('abcd\n').copy(wholeBuffer)
-      helper.buildBuffer('efgh\n').copy(wholeBuffer, 8 + 5)
+      //                           header  content
+      var wholeBuffer = new Buffer(8 * 2 + 2 * 5)
+      helper.buildBuffer(data[0] + '\n').copy(wholeBuffer)
+      helper.buildBuffer(data[1] + '\n').copy(wholeBuffer, 8 + 5)
       helper.writeChunks(lineParser, [wholeBuffer])
     })
   })
