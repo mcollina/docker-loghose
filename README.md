@@ -1,5 +1,7 @@
 # docker-loghose
 
+[![Build Status](https://travis-ci.org/mcollina/docker-loghose.svg?branch=master)](https://travis-ci.org/mcollina/docker-loghose)
+
 Collect all the logs from all docker containers
 
 ## Install
