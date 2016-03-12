@@ -21,7 +21,7 @@ npm install docker-loghose --save
 ## Embedded Usage
 
 ```js
-var loghose = require('loghose')
+var loghose = require('docker-loghose')
 var through = require('through2')
 var opts = {
   json: false, // parse the lines that are coming as JSON
