@@ -28,7 +28,7 @@ function cli () {
   }
 
   loghose({
-    excludeCurrentContainer: true,
+    includeCurrentContainer: false,
     matchByName: argv.matchByName,
     matchByImage: argv.matchByImage,
     skipByName: argv.skipByName,

@@ -28,7 +28,10 @@ var opts = {
   docker: null, // here goes options for Dockerode
   events: null, // an instance of docker-allcontainers
   newline: false, // Break stream in newlines
-  excludeCurrentContainer: true, // avoids endless loop if this runs in a container and writes logs to console
+  // Logs from the container, running docker-loghose are excluded by default.
+  // It could create endless loops, when the same logs are written to stdout...
+  // To get all logs set includeCurrentContainer to 'true'
+  includeCurrentContainer: false, // default value: false
   // the following options limit the containers being matched
   // so we can avoid catching logs for unwanted containers
   matchByName: /hello/, // optional
