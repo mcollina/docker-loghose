@@ -25,7 +25,7 @@ module.exports.buildHeader = function (line) {
 
 module.exports.buildBuffer = function (line) {
   var string = new Buffer(line, 'utf-8')
-  var buffer = new Buffer(string.length + 8, 'utf-8')
+  var buffer = new Buffer(Buffer.byteLength(string, 'utf-8') + 8)
   buildHeader(string).copy(buffer)
   string.copy(buffer, 8)
   return buffer
