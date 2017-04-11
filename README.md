@@ -39,11 +39,19 @@ var opts = {
   skipByName: /.*pasteur.*/, //optional
   skipByImage: /.*dockerfile.*/ //optional
 }
-loghose(opts).pipe(through.obj(function(chunk, enc, cb) {
+var lh = loghose(opts)
+lh.pipe(through.obj(function(chunk, enc, cb) {
   this.push(JSON.stringify(chunk))
   this.push('\n')
+  // stop listening to specific container logs
+  if (/top secret logs/.test(chunk.line)) { 
+    lh.detachContainer(chunk.long_id)
+    // we should not get more logs for the container with chunk.long_id
+  }
   cb()
 })).pipe(process.stdout)
+
+
 ```
 
 ## Command Line Usage
@@ -67,6 +75,7 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock matteocollina/docke
 {
   v: 0,
   id: "3324acd73ad5",
+  long_id: "3324acd73ad573773b901d93e932be65f2bb55b8e6c03167a24c17ab3f172249"
   image: "myimage:latest",
   name: "mycontainer-name"
   time: 1454928524601,
