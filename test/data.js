@@ -1,6 +1,7 @@
 
 module.exports.sampleOutput = {
   id: 'ABCDEFGHIJKL',
+  long_id: 'ABCDEFGHIJKL',
   image: 'test_image',
   name: 'test_image_name',
   v: 0
