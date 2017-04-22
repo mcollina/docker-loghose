@@ -7,31 +7,46 @@ var testData = require('../data')
 var sampleOutput = testData.sampleOutput
 
 describe('The parser', function () {
-  var lineParser
+  var p
 
   beforeEach(function (done) {
-    lineParser = parser(sampleOutput, {})
+    p = parser(sampleOutput, {})
     done()
   })
 
   it('is an object', function (done) {
-    expect(lineParser).to.be.an('object')
+    expect(p).to.be.an('object')
     done()
   })
 
   it('outputs the chunk wrapped in an object', function (done) {
-    helper.expectData(lineParser, [testData.inputLine], done)
+    helper.expectData(p, [testData.inputLine], done)
 
-    helper.writeChunks(lineParser, [helper.buildBuffer(testData.inputLine + '\n')])
+    helper.writeChunks(p, [helper.buildBuffer(testData.inputLine + '\n')])
+  })
+
+  describe('when the sequence of chunks is [header-data] [data]', function () {
+    it('outputs a single entry', function (done) {
+      var firstPayload = new Buffer(testData.verseOne + testData.verseTwo, 'utf-8')
+      var firstBuffer = helper.buildBufferFromString(firstPayload)
+      var secondBuffer = new Buffer(testData.rest)
+
+      helper.buildHeader(new Buffer(testData.inputLine, 'utf-8')).copy(firstBuffer)
+      firstPayload.copy(firstBuffer, 8)
+
+      helper.expectData(p, [testData.inputLine], done)
+
+      helper.writeChunks(p, [firstBuffer, secondBuffer])
+    })
   })
 
   describe('when is sent multiple chunks', function () {
     it('outputs each chunk separately', function (done) {
       var data = [testData.verseOne, testData.verseTwo, testData.rest]
 
-      helper.expectData(lineParser, data, done)
+      helper.expectData(p, data, done)
 
-      helper.writeChunks(lineParser, data.map(function (chunk) { return helper.buildBuffer(chunk) }))
+      helper.writeChunks(p, data.map(function (chunk) { return helper.buildBuffer(chunk) }))
     })
   })
 })

@@ -12,31 +12,31 @@ function buildBuffer (line) {
 
 describe('The parser when using tty options', function () {
   describe('when using a tty option', function () {
-    var lineParser
+    var p
 
     beforeEach(function (done) {
-      lineParser = parser(sampleOutput, {tty: true})
+      p = parser(sampleOutput, {tty: true})
       done()
     })
 
     it('is an object', function (done) {
-      expect(lineParser).to.be.an('object')
+      expect(p).to.be.an('object')
       done()
     })
 
     it('outputs the chunk wrapped in an object', function (done) {
-      helper.expectData(lineParser, [testData.inputLine], done)
+      helper.expectData(p, [testData.inputLine], done)
 
-      helper.writeChunks(lineParser, [buildBuffer(testData.inputLine + '\n')])
+      helper.writeChunks(p, [buildBuffer(testData.inputLine + '\n')])
     })
 
     describe('when is sent multiple chunks', function () {
       it('outputs each chunk separately', function (done) {
         var data = [testData.verseOne, testData.verseTwo, testData.rest]
 
-        helper.expectData(lineParser, data, done)
+        helper.expectData(p, data, done)
 
-        helper.writeChunks(lineParser, data.map(function (chunk) { return buildBuffer(chunk) }))
+        helper.writeChunks(p, data.map(function (chunk) { return buildBuffer(chunk) }))
       })
     })
   })
