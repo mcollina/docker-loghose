@@ -8,11 +8,11 @@ var sampleOutput = data.sampleOutput
 var inputLine = data.inputLine
 
 describe('The parser', function () {
-  var lineParser
+  var p
 
   describe('when processing headers', function () {
     beforeEach(function (done) {
-      lineParser = parser(sampleOutput, {})
+      p = parser(sampleOutput, {})
       done()
     })
 
@@ -26,9 +26,9 @@ describe('The parser', function () {
         firstFour.writeUInt32BE(1, 0)
         lastFour.writeUInt32BE(line.length, 0)
 
-        helper.expectData(lineParser, [inputLine], done)
+        helper.expectData(p, [inputLine], done)
 
-        helper.writeChunks(lineParser, [firstFour, lastFour, line])
+        helper.writeChunks(p, [firstFour, lastFour, line])
       })
 
       describe('where the last chunk contains both headers and payload data', function () {
@@ -41,9 +41,9 @@ describe('The parser', function () {
           rest.writeUInt32BE(line.length, 0)
           line.copy(rest, 4)
 
-          helper.expectData(lineParser, [inputLine], done)
+          helper.expectData(p, [inputLine], done)
 
-          helper.writeChunks(lineParser, [firstFour, rest])
+          helper.writeChunks(p, [firstFour, rest])
         })
       })
     })

@@ -16,21 +16,21 @@ function buildHeader (line) {
   return buffer
 }
 
-module.exports.buildHeader = function (line) {
-  var buffer = new Buffer(8)
-  buffer.writeUInt32BE(1, 0)
-  buffer.writeUInt32BE(line.length, 4)
-  return buffer
+function buildBufferFromString (string) {
+  if (/^0\.10.+/.test(process.versions.node)) {
+    return new Buffer(string.length + 8, 'utf-8')
+  } else {
+    return new Buffer(Buffer.byteLength(string, 'utf-8') + 8)
+  }
 }
+
+module.exports.buildHeader = buildHeader
+
+module.exports.buildBufferFromString = buildBufferFromString
 
 module.exports.buildBuffer = function (line) {
   var string = new Buffer(line, 'utf-8')
-  var buffer = null
-  if (/^0\.10.+/.test(process.versions.node)) {
-    buffer = new Buffer(string.length + 8, 'utf-8')
-  } else { 
-    buffer = new Buffer(Buffer.byteLength(string, 'utf-8') + 8)
-  }
+  var buffer = buildBufferFromString(string)
   buildHeader(string).copy(buffer)
   string.copy(buffer, 8)
   return buffer
