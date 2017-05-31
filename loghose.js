@@ -22,6 +22,7 @@ function cli () {
 
   if (argv.help) {
     console.log('Usage: docker-loghose [--json] [--newline] [--help]\n' +
+                '                      [--nameLabel label]\n' +
                 '                      [--matchByImage REGEXP] [--matchByName REGEXP]\n' +
                 '                      [--skipByImage REGEXP] [--skipByName REGEXP]')
     process.exit(1)
@@ -29,6 +30,7 @@ function cli () {
 
   loghose({
     includeCurrentContainer: false,
+    nameLabel: argv.nameLabel,
     matchByName: argv.matchByName,
     matchByImage: argv.matchByImage,
     skipByName: argv.skipByName,

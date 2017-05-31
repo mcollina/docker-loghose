@@ -28,10 +28,17 @@ var opts = {
   docker: null, // here goes options for Dockerode
   events: null, // an instance of docker-allcontainers
   newline: false, // Break stream in newlines
+
   // Logs from the container, running docker-loghose are excluded by default.
   // It could create endless loops, when the same logs are written to stdout...
   // To get all logs set includeCurrentContainer to 'true'
   includeCurrentContainer: false, // default value: false
+  
+  // In a managed environment, container names may be obfuscated. 
+  // If there is a label that provides a better name for logging,
+  // provide the key here.
+  nameLabel: 'com.amazonaws.ecs.container-name',
+
   // the following options limit the containers being matched
   // so we can avoid catching logs for unwanted containers
   matchByName: /hello/, // optional
