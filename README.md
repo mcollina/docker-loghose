@@ -66,6 +66,7 @@ lh.pipe(through.obj(function(chunk, enc, cb) {
 ```bash
 docker-loghose [--json] [--help]
                [--newline]
+               [--nameLabel STRING]
                [--matchByImage REGEXP] [--matchByName REGEXP]
                [--skipByImage REGEXP] [--skipByName REGEXP]
 ```
