@@ -44,7 +44,7 @@ var opts = {
   matchByName: /hello/, // optional
   matchByImage: /matteocollina/, //optional
   skipByName: /.*pasteur.*/, //optional
-  skipByImage: /.*dockerfile.*/ //optional
+  skipByImage: /.*dockerfile.*/, //optional
   attachFilter: function (id, dockerInspectInfo) {
     // Optional filter function to decide if the log stream should 
     // be attached to a container or not 
