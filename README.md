@@ -45,6 +45,12 @@ var opts = {
   matchByImage: /matteocollina/, //optional
   skipByName: /.*pasteur.*/, //optional
   skipByImage: /.*dockerfile.*/ //optional
+  attachFilter: function (id, dockerInspectInfo) {
+    // Optional filter function to decide if the log stream should 
+    // be attached to a container or not 
+    // e.g. return /LOGGING_ENABLED=true/i.test(dockerInspectInfo.Config.Env.toString())
+    return true
+  }
 }
 var lh = loghose(opts)
 lh.pipe(through.obj(function(chunk, enc, cb) {
