@@ -4,7 +4,7 @@
 
 Collect all the logs from all docker containers
 
-## Install
+## Install
 
 As a command line tool:
 
