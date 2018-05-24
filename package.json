@@ -1,6 +1,6 @@
 {
   "name": "docker-loghose",
-  "version": "1.6.2",
+  "version": "1.6.3",
   "description": "Collect all the logs from all docker containers",
   "main": "loghose.js",
   "scripts": {
