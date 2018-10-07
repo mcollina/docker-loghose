@@ -51,6 +51,13 @@ var opts = {
     // e.g. return /LOGGING_ENABLED=true/i.test(dockerInspectInfo.Config.Env.toString())
     return true
   }
+
+  // Enrich all log events with the labels that are set on the container
+  // Using a regular expression it's possible to limit which labels are set
+  // Labels are added into the root of JSON structure, unless 'labelsKey' is defined
+  addLabels: false // default
+  labelsMatch: /^ecs-.*/ // defaults to .*
+  labelsKey: labels // defaults to 'none'
 }
 var lh = loghose(opts)
 lh.pipe(through.obj(function(chunk, enc, cb) {
@@ -93,7 +100,10 @@ docker run --rm -v /var/run/docker.sock:/var/run/docker.sock matteocollina/docke
   image: "myimage:latest",
   name: "mycontainer-name"
   time: 1454928524601,
-  line: "This is a log line" // this will be an object if opts.jon is true
+  line: "This is a log line", // this will be an object if opts.jon is true
+  labels: {
+            com.amazonaws.ecs.cluster: "my-ecs-cluster"
+          } // labels placed in 'labels' when "--labelsKey labels"
 }
 ```
 

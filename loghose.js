@@ -24,7 +24,8 @@ function cli () {
     console.log('Usage: docker-loghose [--json] [--newline] [--help]\n' +
                 '                      [--nameLabel label]\n' +
                 '                      [--matchByImage REGEXP] [--matchByName REGEXP]\n' +
-                '                      [--skipByImage REGEXP] [--skipByName REGEXP]')
+                '                      [--skipByImage REGEXP] [--skipByName REGEXP]\n' +
+                '                      [--addLabels] [--labelsKey keyname] [--labelsMatch REGEXP]')
     process.exit(1)
   }
 
@@ -35,6 +36,9 @@ function cli () {
     matchByImage: argv.matchByImage,
     skipByName: argv.skipByName,
     skipByImage: argv.skipByImage,
+    addLabels: argv.addLabels,
+    labelsKey: argv.labelsKey,
+    labelsMatch: argv.labelsMatch,
     newline: argv.newline,
     json: argv.json
   }).pipe(through.obj(function (chunk, enc, cb) {
