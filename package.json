@@ -30,7 +30,7 @@
     "bl": "^1.2.0",
     "docker-allcontainers": "^0.7.0",
     "minimist": "^1.1.1",
-    "never-ending-stream": "^1.1.2",
+    "never-ending-stream": "^2.0.0",
     "pump": "^1.0.0",
     "through2": "^2.0.0"
   },
